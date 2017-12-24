@@ -1,0 +1,70 @@
+---
+- name: "Ensure deployment workdir exists"
+  file:
+    path: "{{ item.workdir|default(deployment_default_workdir) }}"
+    state: directory
+    owner: "{{ item.owner|default(deployment_default_owner) }}"
+    group: "{{ item.group|default(deployment_default_group) }}"
+  with_items: "{{ deployment_projects }}"
+
+- name: "Create deployments directory"
+  file:
+    path: "{{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/deployments"
+    state: directory
+    owner: "{{ item.owner|default(deployment_default_owner) }}"
+    group: "{{ item.group|default(deployment_default_group) }}"
+  with_items: "{{ deployment_projects }}"
+
+- name: "Create shared directory"
+  file:
+    path: "{{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/shared"
+    state: directory
+    owner: "{{ item.owner|default(deployment_default_owner) }}"
+    group: "{{ item.group|default(deployment_default_group) }}"
+  with_items: "{{ deployment_projects }}"
+
+- name: "Clone git repository"
+  git:
+    repo: "{{ item.repository }}"
+    dest: "{{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/repository"
+    force: yes
+    ssh_opts: "{{ item.ssh_opts|default('') }}"
+    version: "{{ item.version|default('HEAD') }}"
+  with_items: "{{ deployment_projects }}"
+
+- name: "Register deployment timestamp"
+  set_fact:
+    deploymentDate: "{{lookup('pipe','date +%Y%m%d%H%M%S')}}"
+
+- name: "Create deployment"
+  command: >
+    /bin/cp -r
+    {{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/repository
+    {{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/deployments/{{ deploymentDate }}
+  with_items: "{{ deployment_projects }}"
+
+- name: "Remove git tracking from deployment"
+  command: >
+    rm -rf {{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/deployments/{{ deploymentDate }}/.git
+  with_items: "{{ deployment_projects }}"
+
+- name: "Create symlinks to shared files & directories"
+  file:
+    src: "{{ item.0.workdir|default(deployment_default_workdir) }}/{{ item.0.name }}/shared/{{ item.1 }}"
+    dest: "{{ item.0.workdir|default(deployment_default_workdir) }}/{{ item.0.name }}/deployments/{{ deploymentDate }}/{{ item.1 }}"
+    state: link
+    force: yes
+    owner: "{{ item.0.owner|default(deployment_default_owner) }}"
+    group: "{{ item.0.group|default(deployment_default_group) }}"
+  with_subelements:
+    - "{{ deployment_projects }}"
+    - shared_files
+
+- name: "Current deployment symlink"
+  file:
+    src: "{{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/deployments/{{ deploymentDate }}"
+    dest: "{{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/current"
+    state: link
+    owner: "{{ item.owner|default(deployment_default_owner) }}"
+    group: "{{ item.group|default(deployment_default_group) }}"
+  with_items: "{{ deployment_projects }}"

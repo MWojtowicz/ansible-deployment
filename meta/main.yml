@@ -1,0 +1,29 @@
+galaxy_info:
+  author: Michał Wójtowicz <poczta@mwojtowicz.it>
+  description: An Ansible role that deploy your application just the same way like Capistrano
+  company: mwojtowicz.it
+
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  github_branch: master
+
+  galaxy_tags:
+    - deployment
+    - apache
+    - capistrano
+
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Amazon
+      versions:
+        - all

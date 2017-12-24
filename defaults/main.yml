@@ -1,0 +1,16 @@
+---
+deployment_default_workdir: ""
+
+deployment_default_owner: ""
+deployment_default_group: ""
+
+deployment_projects: []
+# - name: project.name
+#   workdir: /var/www
+#   repository: git@github.com:some/repo
+#   version: "HEAD"
+#   owner: apache
+#   group: apache
+#   shared_files:
+#     - any/path/to/mount/in/dir/deployment/dir
+#   ssh_opts: ""
