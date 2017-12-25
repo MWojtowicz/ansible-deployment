@@ -42,8 +42,8 @@
 
 - name: "Create deployment"
   command: >
-    rsync -av --progress
-    {{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/repository
+    rsync -a
+    {{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/repository/
     {{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/releases/{{ deploymentDate }}
     --exclude .git
   with_items: "{{ deployment_projects }}"
