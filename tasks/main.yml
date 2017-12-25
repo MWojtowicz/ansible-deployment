@@ -1,4 +1,8 @@
 ---
+- name: "Ensure rsync is installed"
+  package:
+    name: rsync
+
 - name: "Ensure deployment workdir exists"
   file:
     path: "{{ item.workdir|default(deployment_default_workdir) }}"
@@ -38,9 +42,10 @@
 
 - name: "Create deployment"
   command: >
-    /bin/cp -r
+    rsync -av --progress
     {{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/repository
     {{ item.workdir|default(deployment_default_workdir) }}/{{ item.name }}/deployments/{{ deploymentDate }}
+    --exclude .git
   with_items: "{{ deployment_projects }}"
 
 - name: "Remove git tracking from deployment"
