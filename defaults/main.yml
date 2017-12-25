@@ -14,3 +14,6 @@ deployment_projects: []
 #   shared_files:
 #     - any/path/to/mount/in/dir/deployment/dir
 #   ssh_opts: ""
+#   keep_releases: 2
+
+deployment_keep_releases: 5

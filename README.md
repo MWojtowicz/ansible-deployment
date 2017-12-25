@@ -32,6 +32,10 @@ Available variables are listed below, along with default values (see `defaults/m
     deployment_default_owner: ""
     deployment_default_group: ""
 
+##### How many latest releases have to keep
+
+    deployment_keep_releases: 5
+
 ##### Project deployments data
 
     deployment_projects: []
@@ -52,6 +56,7 @@ Available variables are listed below, along with default values (see `defaults/m
        shared_files:
          - any/path/to/mount/in/dir/deployment/dir
        ssh_opts: ""
+       keep_releases: 2
 
 ## Dependencies
 
